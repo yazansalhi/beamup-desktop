@@ -8,6 +8,7 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: write
+      id-token: write   # OIDC login to Azure when signing secrets are present
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -15,7 +16,37 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+
+      # Signing is optional: when the three AZURE_* secrets exist, electron-builder signs the app, the uninstaller
+      # and the installer through Azure Trusted Signing (win.azureSignOptions). Without them the build is unsigned.
+      - name: Azure login (Trusted Signing)
+        if: ${{ env.AZURE_CLIENT_ID != '' }}
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      - name: Enable signing in the build config
+        if: ${{ env.AZURE_CLIENT_ID != '' }}
+        shell: bash
+        run: |
+          node -e '
+            const fs = require("fs"); const p = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            p.build.win.azureSignOptions = { publisherName: process.env.SIGN_PUBLISHER, endpoint: process.env.SIGN_ENDPOINT, codeSigningAccountName: process.env.SIGN_ACCOUNT, certificateProfileName: process.env.SIGN_PROFILE };
+            fs.writeFileSync("package.json", JSON.stringify(p, null, 2));'
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          SIGN_PUBLISHER: ${{ vars.SIGN_PUBLISHER }}
+          SIGN_ENDPOINT: ${{ vars.SIGN_ENDPOINT }}
+          SIGN_ACCOUNT: ${{ vars.SIGN_ACCOUNT }}
+          SIGN_PROFILE: ${{ vars.SIGN_PROFILE }}
+
       - run: npx electron-builder --win nsis --x64 --publish never
+        env:
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       - uses: actions/upload-artifact@v4
         with:
           name: BeamUp-Setup
