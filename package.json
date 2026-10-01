@@ -55,8 +55,8 @@
       ],
       "showNameOnTiles": true,
       "setBuildNumber": false,
-      "addAutoLaunchExtension": true,
-      "artifactName": "BeamUp-Store-${version}.${ext}"
+      "artifactName": "BeamUp-Store-${version}.${ext}",
+      "customExtensionsPath": "build/appx/extensions.xml"
     }
   }
 }

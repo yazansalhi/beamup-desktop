@@ -1,0 +1,3 @@
+<desktop:Extension Category="windows.startupTask" Executable="app\BeamUp.exe" EntryPoint="Windows.FullTrustApplication">
+  <desktop:StartupTask TaskId="BeamUpStartup" Enabled="false" DisplayName="BeamUp" />
+</desktop:Extension>
