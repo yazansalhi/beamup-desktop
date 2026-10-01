@@ -1,0 +1,47 @@
+{
+  "name": "beamup-desktop",
+  "productName": "BeamUp",
+  "version": "1.0.0",
+  "description": "BeamUp for Windows \u2014 send anything to the device next to you.",
+  "main": "src/main.js",
+  "private": true,
+  "author": "BeamUp",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron . --url=http://localhost:3011/app",
+    "dist": "electron-builder --win nsis --x64",
+    "dist:dir": "electron-builder --win dir --x64"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.beamup.desktop",
+    "productName": "BeamUp",
+    "artifactName": "BeamUp-${version}-win.${ext}",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "deleteAppDataOnUninstall": false,
+      "shortcutName": "BeamUp",
+      "runAfterFinish": true,
+      "artifactName": "BeamUp-Setup-${version}.${ext}"
+    }
+  }
+}
