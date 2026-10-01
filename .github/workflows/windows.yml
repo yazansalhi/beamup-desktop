@@ -51,8 +51,32 @@ jobs:
         with:
           name: BeamUp-Setup
           path: dist/*.exe
+
+      # Microsoft Store package (.appx, unsigned — the Store signs it). Identity comes from Partner Center
+      # (Product identity page) through repo variables; placeholders are used until they are set.
+      - name: Apply Store identity
+        if: ${{ vars.STORE_IDENTITY_NAME != '' }}
+        shell: bash
+        run: |
+          node -e '
+            const fs = require("fs"); const p = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            p.build.appx.identityName = process.env.STORE_IDENTITY_NAME;
+            p.build.appx.publisher = process.env.STORE_PUBLISHER;
+            p.build.appx.publisherDisplayName = process.env.STORE_PUBLISHER_DISPLAY;
+            fs.writeFileSync("package.json", JSON.stringify(p, null, 2));'
+        env:
+          STORE_IDENTITY_NAME: ${{ vars.STORE_IDENTITY_NAME }}
+          STORE_PUBLISHER: ${{ vars.STORE_PUBLISHER }}
+          STORE_PUBLISHER_DISPLAY: ${{ vars.STORE_PUBLISHER_DISPLAY }}
+      - run: npx electron-builder --win appx --x64 --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BeamUp-Store
+          path: dist/*.appx
       - name: Attach to the release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.exe
+          files: |
+            dist/*.exe
+            dist/*.appx

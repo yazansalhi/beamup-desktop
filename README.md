@@ -18,3 +18,11 @@ How files move: Explorer → `--send` → main process queues entries → render
 written through the `sink*` bridge calls into the BeamUp folder as they arrive, so size is only limited by disk.
 
 The installer is unsigned until a code-signing certificate is bought: SmartScreen shows "unknown publisher" on first run.
+
+## Releasing the installer
+
+`npm run dist` needs 32-bit wine on Linux (electron-builder runs the installer once to produce the uninstaller), so
+releases are built on a Windows runner instead: the public repo **github.com/yazansalhi/beamup-desktop** holds a copy
+of `src/`, `build/`, `package.json`, `package-lock.json` and `.github/workflows/windows.yml`. Copy those files there,
+commit, push a `v<version>` tag, and the workflow attaches `BeamUp-Setup-<version>.exe` to the GitHub release.
+Then set `NUXT_PUBLIC_WINDOWS_DOWNLOAD_URL` in `/var/www/beamup/web.env` to the asset URL and restart `beamup-web`.

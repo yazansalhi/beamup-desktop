@@ -42,6 +42,21 @@
       "shortcutName": "BeamUp",
       "runAfterFinish": true,
       "artifactName": "BeamUp-Setup-${version}.${ext}"
+    },
+    "appx": {
+      "applicationId": "BeamUp",
+      "displayName": "BeamUp",
+      "identityName": "BeamUp.Dev.BeamUp",
+      "publisher": "CN=BeamUp",
+      "publisherDisplayName": "BeamUp",
+      "backgroundColor": "#0B7C73",
+      "languages": [
+        "en-US"
+      ],
+      "showNameOnTiles": true,
+      "setBuildNumber": false,
+      "addAutoLaunchExtension": true,
+      "artifactName": "BeamUp-Store-${version}.${ext}"
     }
   }
 }

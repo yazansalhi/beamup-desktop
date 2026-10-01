@@ -116,7 +116,7 @@ function refreshTray() {
     { label: 'Open BeamUp folder', click: openFolder },
     { type: 'separator' },
     { label: 'Start with Windows', type: 'checkbox', checked: startupEnabled(), click: (item) => setStartup(item.checked) },
-    { label: 'Add “Send with BeamUp” to the right-click menu', type: 'checkbox', checked: !!config.contextMenu, click: (item) => setContextMenu(item.checked) },
+    ...(isStore ? [] : [{ label: 'Add “Send with BeamUp” to the right-click menu', type: 'checkbox', checked: !!config.contextMenu, click: (item) => setContextMenu(item.checked) }]),
     { type: 'separator' },
     { label: `BeamUp ${app.getVersion()}`, enabled: false },
     { label: 'Quit', click: () => { quitting = true; app.quit() } },
@@ -129,7 +129,7 @@ function setStartup(on) { try { app.setLoginItemSettings({ openAtLogin: !!on, ar
 function exeCommand() { return app.isPackaged ? `"${process.execPath}"` : `"${process.execPath}" "${app.getAppPath()}"` }
 function reg(args) { return new Promise((resolve) => execFile('reg', args, { windowsHide: true }, (err, out, errOut) => resolve({ ok: !err, out, errOut }))) }
 async function setContextMenu(on) {
-  if (process.platform !== 'win32') return false
+  if (process.platform !== 'win32' || isStore) return false
   const keys = ['HKCU\\Software\\Classes\\*\\shell\\BeamUp', 'HKCU\\Software\\Classes\\Directory\\shell\\BeamUp']
   if (on) {
     for (const k of keys) {
@@ -144,7 +144,8 @@ async function setContextMenu(on) {
   return true
 }
 function openFolder() { const dir = receiveFolder(); try { fs.mkdirSync(dir, { recursive: true }) } catch {} shell.openPath(dir) }
-function settings() { return { startup: startupEnabled(), contextMenu: !!config.contextMenu, folder: receiveFolder(), version: app.getVersion(), hostname: os.hostname(), url: appUrl } }
+const isStore = !!process.windowsStore
+function settings() { return { startup: startupEnabled(), contextMenu: !!config.contextMenu, folder: receiveFolder(), version: app.getVersion(), hostname: os.hostname(), url: appUrl, store: isStore } }
 
 // ---------- receive sink: the web app streams received files straight into the BeamUp folder ----------
 function safeName(name) { return String(name || 'file').replace(/[\\/:*?"<>|\x00-\x1f]/g, '_').replace(/^\.+$/, '_').slice(0, 200) }
