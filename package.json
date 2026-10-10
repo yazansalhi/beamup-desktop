@@ -1,11 +1,11 @@
 {
   "name": "beamup-desktop",
-  "productName": "BeamUp",
-  "version": "1.0.1",
-  "description": "BeamUp for Windows \u2014 send anything to the device next to you.",
+  "productName": "Beam Connect",
+  "version": "1.0.2",
+  "description": "Beam Connect for Windows — send anything to the device next to you.",
   "main": "src/main.js",
   "private": true,
-  "author": "BeamUp",
+  "author": "Beam Connect",
   "license": "MIT",
   "scripts": {
     "start": "electron . --url=http://localhost:3011/app",
@@ -18,7 +18,7 @@
   },
   "build": {
     "appId": "com.beamup.desktop",
-    "productName": "BeamUp",
+    "productName": "Beam Connect",
     "artifactName": "BeamUp-${version}-win.${ext}",
     "directories": {
       "output": "dist",
@@ -39,13 +39,13 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": false,
       "deleteAppDataOnUninstall": false,
-      "shortcutName": "BeamUp",
+      "shortcutName": "Beam Connect",
       "runAfterFinish": true,
       "artifactName": "BeamUp-Setup-${version}.${ext}"
     },
     "appx": {
       "applicationId": "BeamUp",
-      "displayName": "BeamUp",
+      "displayName": "Beam Connect",
       "identityName": "YazanSalhi.BeamUp",
       "publisher": "CN=34F25F39-06F2-48D8-888C-DF18D569BA64",
       "publisherDisplayName": "Yazan Salhi",

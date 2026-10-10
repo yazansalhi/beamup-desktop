@@ -13,6 +13,8 @@ const MIME = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'im
 // ---------- config & args ----------
 const rawArgs = process.argv.slice(app.isPackaged ? 1 : 2)
 function argValue(args, name) { const a = args.find((x) => x.startsWith(`--${name}=`)); return a ? a.slice(name.length + 3) : null }
+// productName became "Beam Connect"; keep the settings folder at %APPDATA%\BeamUp so existing installs keep their config.
+app.setPath('userData', path.join(app.getPath('appData'), 'BeamUp'))
 const configPath = () => path.join(app.getPath('userData'), 'config.json')
 let config = {}
 function loadConfig() { try { config = JSON.parse(fs.readFileSync(configPath(), 'utf8')) } catch { config = {} } }
@@ -77,7 +79,7 @@ function flushQueue() {
 function createWindow(startHidden) {
   win = new BrowserWindow({
     width: 1280, height: 800, minWidth: 900, minHeight: 600, show: !startHidden,
-    backgroundColor: '#F7FAF9', title: 'BeamUp',
+    backgroundColor: '#F7FAF9', title: 'Beam Connect',
     icon: path.join(__dirname, 'assets', 'icon.png'),
     titleBarStyle: 'hidden',
     titleBarOverlay: { color: '#FFFFFF', symbolColor: '#4B5E5C', height: 36 },
@@ -93,7 +95,7 @@ function createWindow(startHidden) {
   win.webContents.on('did-fail-load', (_e, code, desc) => { if (code !== -3) win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(offlinePage(desc))}`) })
 }
 function showWindow() { if (!win) createWindow(false); if (win.isMinimized()) win.restore(); win.show(); win.focus() }
-function offlinePage(desc) { return `<!doctype html><meta charset="utf-8"><body style="margin:0;font-family:Segoe UI,system-ui;background:#F7FAF9;color:#0E1A19;display:flex;align-items:center;justify-content:center;height:100vh"><div style="text-align:center;max-width:420px"><div style="width:64px;height:64px;border-radius:999px;background:#0B7C73;margin:0 auto 16px"></div><h1 style="font-size:24px;margin:0 0 8px">BeamUp can’t reach the server</h1><p style="color:#4B5E5C;margin:0 0 20px">${desc || 'Check your internet connection.'}<br>${appUrl}</p><button onclick="location.href='${appUrl}'" style="height:44px;padding:0 20px;border-radius:999px;border:0;background:#0B7C73;color:#fff;font:700 14px Segoe UI,system-ui">Try again</button></div></body>` }
+function offlinePage(desc) { return `<!doctype html><meta charset="utf-8"><body style="margin:0;font-family:Segoe UI,system-ui;background:#F7FAF9;color:#0E1A19;display:flex;align-items:center;justify-content:center;height:100vh"><div style="text-align:center;max-width:420px"><div style="width:64px;height:64px;border-radius:999px;background:#0B7C73;margin:0 auto 16px"></div><h1 style="font-size:24px;margin:0 0 8px">Beam Connect can’t reach the server</h1><p style="color:#4B5E5C;margin:0 0 20px">${desc || 'Check your internet connection.'}<br>${appUrl}</p><button onclick="location.href='${appUrl}'" style="height:44px;padding:0 20px;border-radius:999px;border:0;background:#0B7C73;color:#fff;font:700 14px Segoe UI,system-ui">Try again</button></div></body>` }
 
 function maybeScreenshot() {
   const out = argValue(rawArgs, 'screenshot')
@@ -104,21 +106,21 @@ function maybeScreenshot() {
 // ---------- tray ----------
 function createTray() {
   tray = new Tray(nativeImage.createFromPath(path.join(__dirname, 'assets', 'tray.png')))
-  tray.setToolTip('BeamUp — ready to receive')
+  tray.setToolTip('Beam Connect — ready to receive')
   refreshTray()
   tray.on('click', showWindow)
 }
 function refreshTray() {
   if (!tray) return
   tray.setContextMenu(Menu.buildFromTemplate([
-    { label: 'Open BeamUp', click: showWindow },
+    { label: 'Open Beam Connect', click: showWindow },
     { label: 'Pair a phone', click: () => { showWindow(); win.webContents.send('navigate', { mode: 'pair' }) } },
-    { label: 'Open BeamUp folder', click: openFolder },
+    { label: 'Open Beam Connect folder', click: openFolder },
     { type: 'separator' },
     { label: 'Start with Windows', type: 'checkbox', checked: startupEnabled(), click: (item) => setStartup(item.checked) },
-    ...(isStore ? [] : [{ label: 'Add “Send with BeamUp” to the right-click menu', type: 'checkbox', checked: !!config.contextMenu, click: (item) => setContextMenu(item.checked) }]),
+    ...(isStore ? [] : [{ label: 'Add “Send with Beam Connect” to the right-click menu', type: 'checkbox', checked: !!config.contextMenu, click: (item) => setContextMenu(item.checked) }]),
     { type: 'separator' },
-    { label: `BeamUp ${app.getVersion()}`, enabled: false },
+    { label: `Beam Connect ${app.getVersion()}`, enabled: false },
     { label: 'Quit', click: () => { quitting = true; app.quit() } },
   ]))
 }
@@ -133,7 +135,7 @@ async function setContextMenu(on) {
   const keys = ['HKCU\\Software\\Classes\\*\\shell\\BeamUp', 'HKCU\\Software\\Classes\\Directory\\shell\\BeamUp']
   if (on) {
     for (const k of keys) {
-      await reg(['add', k, '/ve', '/d', 'Send with BeamUp', '/f'])
+      await reg(['add', k, '/ve', '/d', 'Send with Beam Connect', '/f'])
       await reg(['add', k, '/v', 'Icon', '/d', `${process.execPath},0`, '/f'])
       await reg(['add', `${k}\\command`, '/ve', '/d', `${exeCommand()} --send "%1"`, '/f'])
     }

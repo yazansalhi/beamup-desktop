@@ -1,7 +1,7 @@
-# BeamUp for Windows
+# Beam Connect for Windows
 
-Electron shell around the BeamUp web app (`/app`). It adds what the browser cannot do: a system-tray app that keeps
-receiving, start with Windows, the Explorer right-click **Send with BeamUp** (files and folders), and saving received
+Electron shell around the Beam Connect web app (`/app`). It adds what the browser cannot do: a system-tray app that keeps
+receiving, start with Windows, the Explorer right-click **Send with Beam Connect** (files and folders), and saving received
 files straight into `Downloads\BeamUp` (or a folder you pick) without prompts.
 
 ```bash
