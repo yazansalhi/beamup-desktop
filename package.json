@@ -1,7 +1,7 @@
 {
   "name": "beamup-desktop",
   "productName": "Beam Connect",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Beam Connect for Windows — send anything to the device next to you.",
   "main": "src/main.js",
   "private": true,
