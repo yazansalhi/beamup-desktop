@@ -1,8 +1,8 @@
 {
   "name": "beamup-desktop",
   "productName": "Beam Connect",
-  "version": "1.0.3",
-  "description": "Beam Connect for Windows — send anything to the device next to you.",
+  "version": "1.0.4",
+  "description": "Beam Connect for Windows \u2014 send anything to the device next to you.",
   "main": "src/main.js",
   "private": true,
   "author": "Beam Connect",
@@ -48,7 +48,7 @@
       "displayName": "Beam Connect",
       "identityName": "YazanSalhi.BeamUp",
       "publisher": "CN=34F25F39-06F2-48D8-888C-DF18D569BA64",
-      "publisherDisplayName": "Yazan Salhi",
+      "publisherDisplayName": "Beam Connect",
       "backgroundColor": "#0B7C73",
       "languages": [
         "en-US"
