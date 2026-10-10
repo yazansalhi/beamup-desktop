@@ -57,6 +57,7 @@
       "setBuildNumber": false,
       "artifactName": "BeamUp-Store-${version}.${ext}",
       "customExtensionsPath": "build/appx/extensions.xml"
-    }
+    },
+    "executableName": "BeamUp"
   }
 }
